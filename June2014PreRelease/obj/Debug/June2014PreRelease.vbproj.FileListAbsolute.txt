@@ -1,1 +1,9 @@
 c:\users\dan\documents\visual studio 2012\Projects\June2014PreRelease\June2014PreRelease\bin\Debug\June2014PreRelease.exe.config
+c:\users\dan\documents\visual studio 2012\Projects\June2014PreRelease\June2014PreRelease\bin\Debug\June2014PreRelease.exe
+c:\users\dan\documents\visual studio 2012\Projects\June2014PreRelease\June2014PreRelease\bin\Debug\June2014PreRelease.pdb
+c:\users\dan\documents\visual studio 2012\Projects\June2014PreRelease\June2014PreRelease\bin\Debug\June2014PreRelease.xml
+c:\users\dan\documents\visual studio 2012\Projects\June2014PreRelease\June2014PreRelease\obj\Debug\June2014PreRelease.Resources.resources
+c:\users\dan\documents\visual studio 2012\Projects\June2014PreRelease\June2014PreRelease\obj\Debug\June2014PreRelease.vbproj.GenerateResource.Cache
+c:\users\dan\documents\visual studio 2012\Projects\June2014PreRelease\June2014PreRelease\obj\Debug\June2014PreRelease.exe
+c:\users\dan\documents\visual studio 2012\Projects\June2014PreRelease\June2014PreRelease\obj\Debug\June2014PreRelease.xml
+c:\users\dan\documents\visual studio 2012\Projects\June2014PreRelease\June2014PreRelease\obj\Debug\June2014PreRelease.pdb

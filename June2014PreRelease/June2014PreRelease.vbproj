@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3AA3B401-9806-4035-846F-0F0C05DFDAB5}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>June2014PreRelease.Module1</StartupObject>
+    <StartupObject>June2014PreRelease.CardPredict</StartupObject>
     <RootNamespace>June2014PreRelease</RootNamespace>
     <AssemblyName>June2014PreRelease</AssemblyName>
     <FileAlignment>512</FileAlignment>

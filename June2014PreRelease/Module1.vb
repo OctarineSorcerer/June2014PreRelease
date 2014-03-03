@@ -8,42 +8,42 @@ Module CardPredict
     Const NoOfRecentScores As Integer = 3
 
     Structure TCard
-        Dim Suit As Integer
-        Dim Rank As Integer
+        Dim Suit As Integer 'the suit of the card, expressed as an integer
+        Dim Rank As Integer 'the rank of the card, ie its number
     End Structure
 
     Structure TRecentScore
-        Dim Name As String
-        Dim Score As Integer
+        Dim Name As String 'name of the scoreholder
+        Dim Score As Integer 'points of the scoreholder
     End Structure
 
     Sub Main()
-        Dim Choice As Char
-        Dim Deck(52) As TCard
-        Dim RecentScores(NoOfRecentScores) As TRecentScore
-        Randomize()
+        Dim Choice As Char 'container or the user's input
+        Dim Deck(52) As TCard 'Array of the structure TCard, ie deck (empty at the moment)
+        Dim RecentScores(NoOfRecentScores) As TRecentScore 'Array of recent scores
+        Randomize() 'initialises random-number generator
         Do
             DisplayMenu()
-            Choice = GetMenuChoice()
-            Select Case Choice
+            Choice = GetMenuChoice() 'Choice becomes user input
+            Select Case Choice 'does code based on value of Choice
                 Case "1"
-                    LoadDeck(Deck)
-                    ShuffleDeck(Deck)
-                    PlayGame(Deck, RecentScores)
+                    LoadDeck(Deck) 'calls the function to populate deck
+                    ShuffleDeck(Deck) 'makes order of cards random
+                    PlayGame(Deck, RecentScores) 'initialises game
                 Case "2"
                     LoadDeck(Deck)
                     PlayGame(Deck, RecentScores)
                 Case "3"
-                    DisplayRecentScores(RecentScores)
+                    DisplayRecentScores(RecentScores) 'Displays recent scores
                 Case "4"
-                    ResetRecentScores(RecentScores)
+                    ResetRecentScores(RecentScores) 'Resets recent scores
             End Select
-        Loop Until Choice = "q"
+        Loop Until Choice = "q" 'exits when choice is q
     End Sub
 
-    Function GetRank(ByVal RankNo As Integer) As String
+    Function GetRank(ByVal RankNo As Integer) As String 'Gets rank corresponding to integer
         Dim Rank As String = ""
-        Select Case RankNo
+        Select Case RankNo 'Sets output depending on RankNo
             Case 1 : Rank = "Ace"
             Case 2 : Rank = "Two"
             Case 3 : Rank = "Three"
@@ -61,7 +61,7 @@ Module CardPredict
         Return Rank
     End Function
 
-    Function GetSuit(ByVal SuitNo As Integer) As String
+    Function GetSuit(ByVal SuitNo As Integer) As String 'Gets correct suit for a number
         Dim Suit As String = ""
         Select Case SuitNo
             Case 1 : Suit = "Clubs"
@@ -72,7 +72,7 @@ Module CardPredict
         Return Suit
     End Function
 
-    Sub DisplayMenu()
+    Sub DisplayMenu()  'writes the menu onto console
         Console.WriteLine()
         Console.WriteLine("MAIN MENU")
         Console.WriteLine()
@@ -84,42 +84,42 @@ Module CardPredict
         Console.Write("Select an option from the menu (or enter q to quit): ")
     End Sub
 
-    Function GetMenuChoice() As Char
+    Function GetMenuChoice() As Char 'gets user input
         Dim Choice As Char
         Choice = Console.ReadLine
         Console.WriteLine()
         Return Choice
     End Function
 
-    Sub LoadDeck(ByRef Deck() As TCard)
+    Sub LoadDeck(ByRef Deck() As TCard) 'populates a deck
         Dim Count As Integer
         FileOpen(1, "deck.txt", OpenMode.Input)
         Count = 1
-        While Not EOF(1)
-            Deck(Count).Suit = CInt(LineInput(1))
-            Deck(Count).Rank = CInt(LineInput(1))
+        While Not EOF(1) 'while we haven't hit end of file
+            Deck(Count).Suit = CInt(LineInput(1)) 'suit of correct card is set
+            Deck(Count).Rank = CInt(LineInput(1)) 'rank of correct card is set
             Count = Count + 1
         End While
         FileClose(1)
     End Sub
 
-    Sub ShuffleDeck(ByRef Deck() As TCard)
-        Dim NoOfSwaps As Integer
-        Dim Position1 As Integer
-        Dim Position2 As Integer
-        Dim SwapSpace As TCard
-        Dim NoOfSwapsMadeSoFar As Integer
-        NoOfSwaps = 1000
+    Sub ShuffleDeck(ByRef Deck() As TCard) 'shuffles the deck
+        Dim NoOfSwaps As Integer 'times to swap
+        Dim Position1 As Integer 'random position of first card
+        Dim Position2 As Integer 'random position of second card
+        Dim SwapSpace As TCard 'container for card at position1
+        Dim NoOfSwapsMadeSoFar As Integer 'counter for the For loop
+        NoOfSwaps = 1000 'no of times to loop
         For NoOfSwapsMadeSoFar = 1 To NoOfSwaps
             Position1 = Int(Rnd() * 52) + 1
-            Position2 = Int(Rnd() * 52) + 1
-            SwapSpace = Deck(Position1)
-            Deck(Position1) = Deck(Position2)
-            Deck(Position2) = SwapSpace
+            Position2 = Int(Rnd() * 52) + 1 'both of these are set to a random position in deck
+            SwapSpace = Deck(Position1) 'gets card at position1
+            Deck(Position1) = Deck(Position2) 'card at position2 is placed at position1
+            Deck(Position2) = SwapSpace 'card at position2 is replaced with SwapSpace card
         Next
     End Sub
 
-    Sub DisplayCard(ByVal ThisCard As TCard)
+    Sub DisplayCard(ByVal ThisCard As TCard) 'writes out details of card onto console
         Console.WriteLine()
         Console.WriteLine("Card is the " & GetRank(ThisCard.Rank) & " of " & GetSuit(ThisCard.Suit))
         Console.WriteLine()
@@ -129,22 +129,22 @@ Module CardPredict
         Dim Count As Integer
         ThisCard = Deck(1)
         For Count = 1 To (51 - NoOfCardsTurnedOver)
-            Deck(Count) = Deck(Count + 1)
+            Deck(Count) = Deck(Count + 1) 'brings cards left closer to the beginning of deck
         Next
         Deck(52 - NoOfCardsTurnedOver).Suit = 0
-        Deck(52 - NoOfCardsTurnedOver).Rank = 0
+        Deck(52 - NoOfCardsTurnedOver).Rank = 0 'blanks the now-used card
     End Sub
 
     Function IsNextCardHigher(ByVal LastCard As TCard, ByVal NextCard As TCard) As Boolean
         Dim Higher As Boolean
         Higher = False
         If NextCard.Rank > LastCard.Rank Then
-            Higher = True
+            Higher = True 'checks NextCard rank is higher than LastCard's
         End If
         Return Higher
     End Function
 
-    Function GetPlayerName() As String
+    Function GetPlayerName() As String 'gets player's name from player
         Dim PlayerName As String
         Console.WriteLine()
         Console.Write("Please enter your name: ")
@@ -157,20 +157,20 @@ Module CardPredict
         Dim Choice As Char
         Console.Write("Do you think the next card will be higher than the last card (enter y or n)? ")
         Choice = Console.ReadLine
-        Return Choice
+        Return Choice 'gets user's clairvoyant opinion
     End Function
 
     Sub DisplayEndOfGameMessage(ByVal Score As Integer)
         Console.WriteLine()
-        Console.WriteLine("GAME OVER!")
+        Console.WriteLine("GAME OVER!") 'game finished
         Console.WriteLine("Your score was " & Score)
-        If Score = 51 Then
+        If Score = 51 Then 'For if they're special/sneaky enough to get 51
             Console.WriteLine("WOW!  You completed a perfect game.")
         End If
         Console.WriteLine()
     End Sub
 
-    Sub DisplayCorrectGuessMessage(ByVal Score As Integer)
+    Sub DisplayCorrectGuessMessage(ByVal Score As Integer) 'Person guessed correctly
         Console.WriteLine()
         Console.WriteLine("Well done!  You guessed correctly.")
         Console.WriteLine("Your score is now " & Score & ".")
@@ -179,7 +179,7 @@ Module CardPredict
 
     Sub ResetRecentScores(ByRef RecentScores() As TRecentScore)
         Dim Count As Integer
-        For Count = 1 To NoOfRecentScores
+        For Count = 1 To NoOfRecentScores 'loops through RecentScores and resets items
             RecentScores(Count).Name = ""
             RecentScores(Count).Score = 0
         Next
@@ -190,7 +190,7 @@ Module CardPredict
         Console.WriteLine()
         Console.WriteLine("Recent scores:")
         Console.WriteLine()
-        For Count = 1 To NoOfRecentScores
+        For Count = 1 To NoOfRecentScores 'displays all recent scores
             Console.WriteLine(RecentScores(Count).Name & " got a score of " & RecentScores(Count).Score)
         Next
         Console.WriteLine()
@@ -203,58 +203,58 @@ Module CardPredict
         Dim PlayerName As String
         Dim Count As Integer
         Dim FoundSpace As Boolean
-        PlayerName = GetPlayerName()
+        PlayerName = GetPlayerName() 'gets name of player
         FoundSpace = False
         Count = 1
         While Not FoundSpace And Count <= NoOfRecentScores
-            If RecentScores(Count).Name = "" Then
+            If RecentScores(Count).Name = "" Then 'if slot is empty
                 FoundSpace = True
             Else
                 Count = Count + 1
             End If
         End While
-        If Not FoundSpace Then
+        If Not FoundSpace Then 'if no empty spaces
             For Count = 1 To NoOfRecentScores - 1
-                RecentScores(Count) = RecentScores(Count + 1)
+                RecentScores(Count) = RecentScores(Count + 1) 'essentially shifts them across
             Next
             Count = NoOfRecentScores
         End If
         RecentScores(Count).Name = PlayerName
-        RecentScores(Count).Score = Score
+        RecentScores(Count).Score = Score 'last entry is set
     End Sub
 
     Sub PlayGame(ByVal Deck() As TCard, ByRef RecentScores() As TRecentScore)
-        Dim NoOfCardsTurnedOver As Integer
-        Dim GameOver As Boolean
-        Dim NextCard As TCard
-        Dim LastCard As TCard
-        Dim Higher As Boolean
-        Dim Choice As Char
-        GameOver = False
-        GetCard(LastCard, Deck, 0)
-        DisplayCard(LastCard)
-        NoOfCardsTurnedOver = 1
-        While NoOfCardsTurnedOver < 52 And Not GameOver
-            GetCard(NextCard, Deck, NoOfCardsTurnedOver)
+        Dim NoOfCardsTurnedOver As Integer 'Number of cards player has turned over so far
+        Dim GameOver As Boolean 'Have they lost the game?
+        Dim NextCard As TCard 'card about to be drawn
+        Dim LastCard As TCard 'card last drawn
+        Dim Higher As Boolean 'is the next card higher
+        Dim Choice As Char 'user input
+        GameOver = False 'They have not lost the game yet
+        GetCard(LastCard, Deck, 0) 'gets next card
+        DisplayCard(LastCard) 'displays the card
+        NoOfCardsTurnedOver = 1 'increments cards turned over
+        While NoOfCardsTurnedOver < 52 And Not GameOver 'while game hasn't ended
+            GetCard(NextCard, Deck, NoOfCardsTurnedOver) 'get next card
             Do
                 Choice = GetChoiceFromUser()
-            Loop Until Choice = "y" Or Choice = "n"
-            DisplayCard(NextCard)
-            NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
-            Higher = IsNextCardHigher(LastCard, NextCard)
-            If Higher And Choice = "y" Or Not Higher And Choice = "n" Then
-                DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
-                LastCard = NextCard
+            Loop Until Choice = "y" Or Choice = "n" 'loop until valid user input
+            DisplayCard(NextCard) 'display the next card
+            NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1 'increment no of cards turned over
+            Higher = IsNextCardHigher(LastCard, NextCard) 'checks if this card is higher than last
+            If Higher And Choice = "y" Or Not Higher And Choice = "n" Then 'If their choice is correct
+                DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1) 'display correct message
+                LastCard = NextCard 'sets lastcard to card just drawn
             Else
-                GameOver = True
+                GameOver = True 'they guessed wrong
             End If
         End While
-        If GameOver Then
-            DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2)
-            UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2)
-        Else
+        If GameOver Then 'they died
+            DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2) 'display their score
+            UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2) 'update recent scores
+        Else 'they got through all the cards
             DisplayEndOfGameMessage(51)
-            UpdateRecentScores(RecentScores, 51)
+            UpdateRecentScores(RecentScores, 51) 'update recent scores with perfect score
         End If
     End Sub
 End Module
