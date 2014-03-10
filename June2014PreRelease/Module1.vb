@@ -10,7 +10,6 @@ Module CardPredict
     Structure TCard
         Dim Suit As Integer 'the suit of the card, expressed as an integer
         Dim Rank As Integer 'the rank of the card, ie its number
-        Dim TimesTurnedOver As Integer 'Track the amount of times this has been turned over
     End Structure
 
     Structure TRecentScore
@@ -20,7 +19,7 @@ Module CardPredict
 
     Sub Main()
         Dim Choice As Char 'container or the user's input
-        Dim Deck(52) As TCard 'With this method, the array size does not have to increase
+        Dim Deck(52) As TCard 'Array of the structure TCard, ie deck (empty at the moment)
         Dim RecentScores(NoOfRecentScores) As TRecentScore 'Array of recent scores
         Randomize() 'initialises random-number generator
         Do
@@ -99,7 +98,6 @@ Module CardPredict
         While Not EOF(1) 'while we haven't hit end of file
             Deck(Count).Suit = CInt(LineInput(1)) 'suit of correct card is set
             Deck(Count).Rank = CInt(LineInput(1)) 'rank of correct card is set
-            Deck(Count).TimesTurnedOver = 0 'At initialisation, card has not been turned over
             Count = Count + 1
         End While
         FileClose(1)
@@ -127,18 +125,14 @@ Module CardPredict
         Console.WriteLine()
     End Sub
 
-    Sub GetCard(ByRef ThisCard As TCard, ByRef Deck() As TCard, _
-                ByVal NoOfCardsTurnedOver As Integer, ByVal DecksUsed As Integer)
+    Sub GetCard(ByRef ThisCard As TCard, ByRef Deck() As TCard, ByVal NoOfCardsTurnedOver As Integer)
         Dim Count As Integer
         ThisCard = Deck(1)
-        Deck(1).TimesTurnedOver += 1
-        If Deck(1).TimesTurnedOver = 2 Then 'If card has been used max amount of times
-            For Count = 1 To (51 - NoOfCardsTurnedOver)
-                Deck(Count) = Deck(Count + 1) 'brings cards left closer to the beginning of deck
-            Next
-            Deck(52 - NoOfCardsTurnedOver).Suit = 0
-            Deck(52 - NoOfCardsTurnedOver).Rank = 0 'blanks the now-used card
-        End If
+        For Count = 1 To (51 - NoOfCardsTurnedOver)
+            Deck(Count) = Deck(Count + 1) 'brings cards left closer to the beginning of deck
+        Next
+        Deck(52 - NoOfCardsTurnedOver).Suit = 0
+        Deck(52 - NoOfCardsTurnedOver).Rank = 0 'blanks the now-used card
     End Sub
 
     Function IsNextCardHigher(ByVal LastCard As TCard, ByVal NextCard As TCard) As Boolean
@@ -166,11 +160,11 @@ Module CardPredict
         Return Choice 'gets user's clairvoyant opinion
     End Function
 
-    Sub DisplayEndOfGameMessage(ByVal Score As Integer, ByVal DecksUsed As Integer)
+    Sub DisplayEndOfGameMessage(ByVal Score As Integer)
         Console.WriteLine()
         Console.WriteLine("GAME OVER!") 'game finished
         Console.WriteLine("Your score was " & Score)
-        If Score = (52 * DecksUsed) - 1 Then 'For if they're special/sneaky enough to get max
+        If Score = 51 Then 'For if they're special/sneaky enough to get 51
             Console.WriteLine("WOW!  You completed a perfect game.")
         End If
         Console.WriteLine()
@@ -229,35 +223,25 @@ Module CardPredict
         RecentScores(Count).Score = Score 'last entry is set
     End Sub
 
-    Function GetNoOfDecksToUse()
-        Console.WriteLine("How many decks do you want to use?")
-        Dim userInput As Integer = Console.ReadLine()
-        Do While userInput < 1
-            Console.WriteLine("Input invalid, please enter a number > 0")
-        Loop
-        Return userInput
-    End Function
-
     Sub PlayGame(ByVal Deck() As TCard, ByRef RecentScores() As TRecentScore)
         Dim NoOfCardsTurnedOver As Integer 'Number of cards player has turned over so far
-        Dim DecksUsed As Integer = GetNoOfDecksToUse()
         Dim GameOver As Boolean 'Have they lost the game?
         Dim NextCard As TCard 'card about to be drawn
         Dim LastCard As TCard 'card last drawn
         Dim Higher As Boolean 'is the next card higher
         Dim Choice As Char 'user input
         GameOver = False 'They have not lost the game yet
-        GetCard(LastCard, Deck, 0, DecksUsed) 'gets next card
+        GetCard(LastCard, Deck, 0) 'gets next card
         DisplayCard(LastCard) 'displays the card
         NoOfCardsTurnedOver = 1 'increments cards turned over
-        While NoOfCardsTurnedOver < 52 * DecksUsed And Not GameOver 'while game hasn't ended
-            GetCard(NextCard, Deck, NoOfCardsTurnedOver, DecksUsed) 'get next card
+        While NoOfCardsTurnedOver < 52 And Not GameOver 'while game hasn't ended
+            GetCard(NextCard, Deck, NoOfCardsTurnedOver) 'get next card
             Do
                 Choice = GetChoiceFromUser()
             Loop Until Choice = "y" Or Choice = "n" 'loop until valid user input
             DisplayCard(NextCard) 'display the next card
             NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1 'increment no of cards turned over
-            Higher = True 'IsNextCardHigher(LastCard, NextCard) 'checks if this card is higher than last
+            Higher = IsNextCardHigher(LastCard, NextCard) 'checks if this card is higher than last
             If Higher And Choice = "y" Or Not Higher And Choice = "n" Then 'If their choice is correct
                 DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1) 'display correct message
                 LastCard = NextCard 'sets lastcard to card just drawn
@@ -266,10 +250,10 @@ Module CardPredict
             End If
         End While
         If GameOver Then 'they died
-            DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2, DecksUsed) 'display their score
+            DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2) 'display their score
             UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2) 'update recent scores
         Else 'they got through all the cards
-            DisplayEndOfGameMessage((52 * DecksUsed) - 1, DecksUsed)
+            DisplayEndOfGameMessage(51)
             UpdateRecentScores(RecentScores, 51) 'update recent scores with perfect score
         End If
     End Sub
